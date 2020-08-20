@@ -4,19 +4,23 @@
 
 # nano /etc/pacman.d/mirrorlist
 
+# pacman-key --init
+
+# pacman-key --populate archlinux
+
 # mount /dev/sda2 /mnt
 
 # mkdir /mnt/efi
 
 # mount /dev/sda1 /mnt/efi
 
-# pacstrap /mnt base base-devel linux linux-firmware dosfstools exfat-utils f2fs-tools e2fsprogs ntfs-3g udftools fuse2 fuse3 squashfuse btfs fuseiso kio-fuse mtpfs sshfs nano man-db man-pages texinfo grub efibootmgr intel-ucode fish pacman-contrib pkgstats pkgfile neofetch htop git make xorg mesa lib32-mesa intel-media-driver libva-intel-driver lib32-libva-intel-driver libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xf86-video-amdgpu vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-radeon lib32-vulkan-radeon amdvlk lib32-amdvlk plasma kde-applications packagekit-qt5 fwupd ffmpeg gst-libav gst-plugins-base lib32-gst-plugins-base gst-plugins-good lib32-gst-plugins-good gst-plugins-bad gst-plugins-ugly ttf-dejavu ttf-liberation firefox cpupower haveged android-file-transfer android-tools calligra hunspell hunspell-en_US krusader ktorrent nextcloud-client xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-kde
+# pacstrap /mnt base base-devel linux linux-firmware dosfstools exfat-utils f2fs-tools e2fsprogs ntfs-3g udftools fuse2 fuse3 squashfuse btfs fuseiso kio-fuse mtpfs sshfs nano man-db man-pages texinfo dialog dhcpcd dnsmasq wpa_supplicant grub efibootmgr intel-ucode fish pacman-contrib pkgstats pkgfile neofetch htop git make xorg mesa lib32-mesa intel-media-driver libva-intel-driver lib32-libva-intel-driver libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xf86-video-amdgpu vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-radeon lib32-vulkan-radeon amdvlk lib32-amdvlk plasma kde-applications packagekit-qt5 fwupd ffmpeg gst-libav gst-plugins-base lib32-gst-plugins-base gst-plugins-good lib32-gst-plugins-good gst-plugins-bad gst-plugins-ugly ttf-dejavu ttf-liberation cpupower haveged android-file-transfer android-tools partitionmanager firefox calligra hunspell hunspell-en_US krusader ktorrent persepolis telegram-desktop nextcloud-client steam clipgrab clementine cantata mpd perl-uri pulseeffects speedcrunch xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-kde
 
 # genfstab -U /mnt >> /mnt/etc/fstab
 
 # arch-chroot /mnt
 
-# ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
+# ln -sf /usr/share/zoneinfo/COUNTRY/CITY /etc/localtime
 
 # hwclock --systohc
 
@@ -34,16 +38,18 @@
 
 # grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
 
-# nano /etc/default/grub
-
 # grub-mkconfig -o /boot/grub/grub.cfg
 
-# useradd -m -G wheel -s /usr/bin/fish ron
+# useradd -m -G wheel -s /usr/bin/fish user
 
-# passwd ron
+# passwd user
 
 # EDITOR=nano visudo
 
 # nano /etc/default/cpupower
 
-# systemctl enable sddm NetworkManager bluetooth cpupower haveged
+# systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
+
+# pkgfile --update
+
+# appstreamcli refresh-cache --force --verbose
