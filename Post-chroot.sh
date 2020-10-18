@@ -136,18 +136,6 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring Plymouth...\n"
-
-sleep 2
-
-yay -S --noconfirm plymouth
-
-echo -e "\nDone.\n\n"
-
-
-
-
-echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Bootloader...\n"
 
 sleep 2
@@ -164,16 +152,58 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nConfiguring Plymouth...\n"
+
+sleep 2
+
+yay -S --noconfirm plymouth
+
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1"/' /etc/default/grub
+
+sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
+
+touch ~/.hushlogin
+
+echo "kernel.printk = 3 3 3 3" >> /etc/sysctl.d/20-quiet-printk.conf
+
+mkdir /etc/systemd/system/getty@tty1.service.d/
+
+cat << EOT >> /etc/systemd/system/getty@tty1.service.d/skip-prompt.conf
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin username --noclear %I $TERM
+EOT
+
+sed -i '/^MODULES/ s/(.*)/(i915)/' /etc/mkinitcpio.conf
+
+sed -i '/^HOOKS/ s/udev/systemd sd-plymouth/' /etc/mkinitcpio.conf
+
+mkinitcpio -P
+
+sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /usr/lib/systemd/system/systemd-fsck*
+
+plymouth-set-default-theme -R bgrt
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+echo -e "\nDone.\n\n"
+
+
+
+
+echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nFinishing Touch...\n"
 
 sleep 2
 
-systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
+systemctl enable sddm-plymouth NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
 
 pkgfile --update
 
 appstreamcli refresh-cache --force --verbose
 
 echo -e "\nFinally Done.\n\n"
+
+sleep 2
 
 exit
