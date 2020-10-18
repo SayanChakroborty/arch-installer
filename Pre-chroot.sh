@@ -94,4 +94,14 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
 
+sleep 2
+
+
 echo "---------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nStarting Post-chroot step...\n"
+
+cp ./Post-chroot.sh /mnt/root/
+
+chmod a+x /mnt/root/Post-chroot.sh
+
+arch-chroot /mnt /mnt/root/Post-chroot.sh
