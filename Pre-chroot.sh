@@ -105,3 +105,7 @@ cp ./Post-chroot.sh /mnt/root/
 chmod a+x /mnt/root/Post-chroot.sh
 
 arch-chroot /mnt /mnt/root/Post-chroot.sh
+
+umount -a
+
+echo -e "\nInstallation Complete.\n\n"
