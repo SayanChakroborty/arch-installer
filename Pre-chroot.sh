@@ -10,17 +10,19 @@ echo -e "\nDone.\n\n"
 
 
 echo "---------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nModifying Pacman Configuration...\n"
+echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
-sed -i 's/#Color/Color/; s/#TotalDownload/TotalDownload/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
+echo -e "Server = https://mirror.osbeck.com/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 
 echo -e "\nDone.\n\n"
 
 
 echo "---------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
+echo -e "\nModifying Pacman Configuration...\n"
 
-echo -e "Server = https://mirror.osbeck.com/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+sed -i 's/#Color/Color/; s/#TotalDownload/TotalDownload/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
+
+pacman -Syy
 
 echo -e "\nDone.\n\n"
 
