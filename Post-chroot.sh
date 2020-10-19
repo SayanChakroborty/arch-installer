@@ -2,7 +2,7 @@
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nInstalling Packages...\n"
+echo -e "\nUpdating Pacman Configuration...\n"
 
 sleep 2
 
@@ -159,7 +159,7 @@ sleep 2
 
 sudo -u ron yay -S --noconfirm plymouth
 
-sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1"/' /etc/default/grub
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1 resume="PARTLABEL=SWAP""/' /etc/default/grub
 
 sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
 
@@ -196,6 +196,12 @@ echo "--------------------------------------------------------------------------
 echo -e "\nFinishing Touch...\n"
 
 sleep 2
+
+echo -e "vm.swappiness = 0\nvm.vfs_cache_pressure = 1\nvm.dirty_background_bytes = 4194304\nvm.dirty_bytes = 4194304\n" >> /etc/sysctl.conf
+
+sysctl -p
+
+sed -i '/^#governor/ s/#//; /^governor/ s/ondemand/performance/' /etc/default/cpupower
 
 systemctl enable sddm-plymouth NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
 
