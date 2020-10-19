@@ -64,6 +64,8 @@ echo -e "\nEnter Password for New User\n"
 
 passwd ron
 
+echo -e "root ALL=(ALL) NOPASSWD: ALL\n%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/00_nopasswd
+
 cat << EOT >> /etc/polkit-1/rules.d/49-nopasswd_global.rules
 /* Allow members of the wheel group to execute any actions
  * without password authentication, similar to "sudo NOPASSWD:"
@@ -118,15 +120,15 @@ echo -e "\nConfiguring AUR...\n"
 
 sleep 2
 
-mkdir ~/Downloads/AUR/
+sudo -u ron mkdir ~/Downloads/AUR/
 
 cd ~/Downloads/AUR/
 
-git clone https://aur.archlinux.org/yay-bin.git
+sudo -u ron git clone https://aur.archlinux.org/yay-bin.git
 
 cd ./yay-bin
 
-makepkg -si --noconfirm
+sudo -u ron makepkg -si --noconfirm
 
 yay -Syyu --noconfirm
 
