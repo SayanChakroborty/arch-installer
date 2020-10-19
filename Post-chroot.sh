@@ -120,9 +120,9 @@ echo -e "\nConfiguring AUR...\n"
 
 sleep 2
 
-sudo -u ron mkdir ~/Downloads/AUR/
+sudo -u ron mkdir /home/ron/AUR/
 
-cd ~/Downloads/AUR/
+cd /home/ron/AUR/
 
 sudo -u ron git clone https://aur.archlinux.org/yay-bin.git
 
