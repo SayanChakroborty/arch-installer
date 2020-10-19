@@ -124,7 +124,7 @@ cp ./Post-chroot.sh /mnt/root/
 
 chmod a+x /mnt/root/Post-chroot.sh
 
-arch-chroot /mnt /mnt/root/Post-chroot.sh
+arch-chroot /mnt /root/Post-chroot.sh
 
 umount -a
 
