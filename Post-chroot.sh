@@ -201,6 +201,8 @@ echo -e "vm.swappiness = 0\nvm.vfs_cache_pressure = 1\nvm.dirty_background_bytes
 
 sysctl -p
 
+echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
+
 sed -i '/^#governor/ s/#//; /^governor/ s/ondemand/performance/' /etc/default/cpupower
 
 systemctl enable sddm-plymouth NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
