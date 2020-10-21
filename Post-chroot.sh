@@ -203,6 +203,30 @@ sysctl -p
 
 echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
 
+cat << EOT >> /home/ron/.zshrc
+autoload -Uz promptinit
+promptinit
+prompt adam2
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+source /usr/share/doc/pkgfile/command-not-found.zsh
+autoload -Uz run-help
+alias help=run-help
+EOT
+
+cat << EOT >> /etc/zsh/zshrc
+autoload -Uz promptinit
+promptinit
+prompt adam2
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+source /usr/share/doc/pkgfile/command-not-found.zsh
+autoload -Uz run-help
+alias help=run-help
+EOT
+
 sed -i '/^#governor/ s/#//; /^governor/ s/ondemand/performance/' /etc/default/cpupower
 
 systemctl enable sddm-plymouth NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
