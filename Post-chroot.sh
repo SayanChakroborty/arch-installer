@@ -51,17 +51,15 @@ echo -e "\nAccount Management...\n"
 
 sleep 2
 
-echo -e "\nEnter Password for ROOT\n"
+read -r name rp up < /root/passwords
 
-passwd root
+echo -e "$rp\n$rp" | passwd root
 
 echo -e "\nCreating New User...\n"
 
-useradd -m -G wheel -s /bin/zsh ron
+useradd -m -G wheel -s /bin/zsh $name
 
-echo -e "\nEnter Password for New User\n"
-
-passwd ron
+echo -e "$up\n$up" | passwd $name
 
 echo -e "root ALL=(ALL) NOPASSWD: ALL\n%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/00_nopasswd
 
@@ -119,17 +117,17 @@ echo -e "\nConfiguring AUR...\n"
 
 sleep 2
 
-sudo -u ron mkdir /home/ron/AUR/
+sudo -u $name mkdir /home/$name/AUR/
 
-cd /home/ron/AUR/
+cd /home/$name/AUR/
 
-sudo -u ron git clone https://aur.archlinux.org/yay-bin.git
+sudo -u $name git clone https://aur.archlinux.org/yay-bin.git
 
 cd ./yay-bin
 
-sudo -u ron makepkg -si --noconfirm
+sudo -u $name makepkg -si --noconfirm
 
-sudo -u ron yay -Syyu --noconfirm
+sudo -u $name yay -Syyu --noconfirm
 
 echo -e "\nDone.\n\n"
 
@@ -157,13 +155,13 @@ echo -e "\nConfiguring Plymouth...\n"
 
 sleep 2
 
-sudo -u ron yay -S --noconfirm plymouth
+sudo -u $name yay -S --noconfirm plymouth
 
-sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1 resume="PARTLABEL=SWAP""/' /etc/default/grub
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1"/' /etc/default/grub
 
 sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
 
-touch /home/ron/.hushlogin
+touch /home/$name/.hushlogin
 
 echo "kernel.printk = 3 3 3 3" >> /etc/sysctl.d/20-quiet-printk.conf
 
@@ -203,7 +201,7 @@ sysctl -p
 
 echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
 
-cat << EOT >> /home/ron/.zshrc
+cat << EOT >> /home/$name/.zshrc
 autoload -Uz promptinit
 promptinit
 prompt adam2
