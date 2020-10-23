@@ -80,7 +80,7 @@ sleep 2
 
 mkfs.fat -F 32 -n "ESP" /dev/sda1
 
-mkfs.ext4 -L "ROOT" /dev/sda2
+mkfs.ext4 -L "ROOT" -F /dev/sda2
 
 echo -e "\nDone.\n\n"
 
