@@ -38,7 +38,7 @@ echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
 sleep 2
 
-echo -e "Server = https://mirror.osbeck.com/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+echo -e "Server = https://mirrors.dotsrc.org/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 
 echo -e "\nDone.\n\n"
 
