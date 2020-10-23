@@ -2,6 +2,26 @@
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nEnter username to be created:\n"
+
+read name
+
+echo -e "\nEnter root password:\n"
+
+read rp
+
+echo -e "\nEnter user password:\n"
+
+read up
+
+echo -e "$name $rp $up" > ./passwords
+
+echo -e "\nDone.\n\n"
+
+
+
+
+echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nStarting NTP Daemon...\n"
 
 sleep 2
@@ -116,6 +136,8 @@ echo -e "\nStarting Post-chroot step...\n"
 
 sleep 2
 
+cp ./passwords /mnt/root/
+
 cp ./Post-chroot.sh /mnt/root/
 
 chmod a+x /mnt/root/Post-chroot.sh
@@ -127,3 +149,7 @@ umount -a
 sleep 2
 
 echo -e "\nInstallation Complete.\n\n"
+
+sleep 10
+
+poweroff
