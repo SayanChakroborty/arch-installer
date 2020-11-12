@@ -8,7 +8,18 @@ sleep 2
 
 sed -i 's/#Color/Color/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
 
-pacman -Syyu
+echo -e "\n[repo-ck]\nServer = http://repo-ck.com/\$arch\n" >> /etc/pacman.conf
+
+echo -e "keyserver hkps://keys.openpgp.org\n" >> /etc/pacman.d/gnupg/gpg.conf
+
+pacman-key --init
+
+pacman-key --refresh-keys
+
+pacman-key --populate archlinux
+
+pacman -Syyu --noconfirm
+
 echo -e "\nDone.\n\n"
 
 
