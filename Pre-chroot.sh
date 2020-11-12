@@ -40,9 +40,9 @@ sleep 2
 
 reflector --protocol https --score 50 --sort rate --save /etc/pacman.d/mirrorlist --verbose
 
-sed -i '1s/^/Server = https\:\/\/mirrors.dotsrc.org\/archlinux\/\$repo\/os\/\$arch\nServer = https\:\/\/mirror.osbeck.com\/archlinux\/\$repo\/os\/\$arch\n/' /etc/pacman.d/mirrorlist
+sleep 2
 
-echo -e "" > /etc/pacman.d/mirrorlist
+sed -i '1s/^/Server = https\:\/\/mirrors.dotsrc.org\/archlinux\/\$repo\/os\/\$arch\nServer = https\:\/\/mirror.osbeck.com\/archlinux\/\$repo\/os\/\$arch\n/' /etc/pacman.d/mirrorlist
 
 echo -e "\nDone.\n\n"
 
