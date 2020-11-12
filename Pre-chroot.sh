@@ -88,6 +88,28 @@ echo -e "\nFormatting Partitions\n"
 
 sleep 2
 
+wipefs --all /dev/sda
+
+fdisk --wipe always --wipe-partitions always /dev/sda << EOL
+g
+n
+1
+
++512M
+n
+2
+
+
+t
+1
+uefi
+t
+2
+linux
+w
+q
+EOL
+
 mkfs.fat -F 32 -n "ESP" /dev/sda1
 
 mkfs.ext4 -L "ROOT" -F /dev/sda2
