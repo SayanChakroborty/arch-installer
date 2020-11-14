@@ -150,7 +150,7 @@ echo -e "\nConfiguring Bootloader...\n"
 
 sleep 2
 
-pacman -S linux-ck-skylake linux-ck-skylake-headers
+pacman -S linux-ck-skylake linux-ck-skylake-headers --noconfirm
 
 mkinitcpio -P
 
