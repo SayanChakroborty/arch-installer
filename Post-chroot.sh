@@ -50,8 +50,6 @@ locale-gen
 
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 
-echo "laptop" >> /etc/hostname
-
 echo -e "\nDone.\n\n"
 
 
@@ -62,15 +60,17 @@ echo -e "\nAccount Management...\n"
 
 sleep 2
 
-read -r name rp up < /root/passwords
+read -r user rtpw uspw host < /root/passwords
 
-echo -e "$rp\n$rp" | passwd root
+echo -e "$host" > /etc/hostname
+
+echo -e "$rtpw\n$rtpw" | passwd root
 
 echo -e "\nCreating New User...\n"
 
-useradd -m -G wheel -s /bin/zsh $name
+useradd -m -G wheel -s /bin/zsh $user
 
-echo -e "$up\n$up" | passwd $name
+echo -e "$uspw\n$uspw" | passwd $user
 
 echo -e "root ALL=(ALL) NOPASSWD: ALL\n%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/00_nopasswd
 
@@ -128,17 +128,17 @@ echo -e "\nConfiguring AUR...\n"
 
 sleep 2
 
-sudo -u $name mkdir /home/$name/AUR/
+sudo -u $user mkdir /home/$user/AUR/
 
-cd /home/$name/AUR/
+cd /home/$user/AUR/
 
-sudo -u $name git clone https://aur.archlinux.org/yay-bin.git
+sudo -u $user git clone https://aur.archlinux.org/yay-bin.git
 
 cd ./yay-bin
 
-sudo -u $name makepkg -si --noconfirm
+sudo -u $user makepkg -si --noconfirm
 
-sudo -u $name yay -Syyu --noconfirm
+sudo -u $user yay -Syyu --noconfirm
 
 echo -e "\nDone.\n\n"
 
@@ -168,13 +168,13 @@ echo -e "\nConfiguring Plymouth...\n"
 
 sleep 2
 
-sudo -u $name yay -S --noconfirm plymouth
+sudo -u $user yay -S --noconfirm plymouth
 
 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1"/' /etc/default/grub
 
 sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
 
-touch /home/$name/.hushlogin
+touch /home/$user/.hushlogin
 
 echo "kernel.printk = 3 3 3 3" >> /etc/sysctl.d/20-quiet-printk.conf
 
@@ -214,7 +214,7 @@ sysctl -p
 
 echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
 
-cat << EOT >> /home/$name/.zshrc
+cat << EOT >> /home/$user/.zshrc
 autoload -Uz promptinit
 promptinit
 prompt adam2
