@@ -150,8 +150,6 @@ echo -e "\nConfiguring Bootloader...\n"
 
 sleep 2
 
-pacman -S linux-ck-skylake linux-ck-skylake-headers --noconfirm
-
 mkinitcpio -P
 
 grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
