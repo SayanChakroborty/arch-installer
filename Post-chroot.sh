@@ -10,13 +10,11 @@ sed -i 's/#Color/Color/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Incl
 
 echo -e "\n[repo-ck]\nServer = http://repo-ck.com/\$arch\n" >> /etc/pacman.conf
 
-echo -e "keyserver hkps://keys.openpgp.org\n" >> /etc/pacman.d/gnupg/gpg.conf
-
 pacman-key --init
 
-pacman-key --refresh-keys
-
 pacman-key --populate archlinux
+
+pacman-key --refresh-keys
 
 pacman -Syyu --noconfirm
 
@@ -149,6 +147,8 @@ echo "--------------------------------------------------------------------------
 echo -e "\nConfiguring Bootloader...\n"
 
 sleep 2
+
+pacman -S ck-skylake --noconfirm
 
 mkinitcpio -P
 
