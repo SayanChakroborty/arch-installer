@@ -8,11 +8,15 @@ sleep 2
 
 sed -i 's/#Color/Color/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
 
+echo -e "\n[repo-ck]\nServer = http://repo-ck.com/\$arch\n" >> /etc/pacman.conf
+
 pacman-key --init
 
 pacman-key --populate archlinux
 
 pacman-key --refresh-keys
+
+pacman-key -r 5EE46C4C && pacman-key --lsign-key 5EE46C4C
 
 pacman -Syyu --noconfirm
 
