@@ -16,6 +16,8 @@ pacman-key --populate archlinux
 
 pacman-key --refresh-keys
 
+pacman-key -r 5EE46C4C && pacman-key --lsign-key 5EE46C4C
+
 pacman -Syyu --noconfirm
 
 echo -e "\nDone.\n\n"
@@ -148,7 +150,7 @@ echo -e "\nConfiguring Bootloader...\n"
 
 sleep 2
 
-pacman -S ck-skylake --noconfirm
+pacman -Syyu ck-skylake --noconfirm
 
 mkinitcpio -P
 
