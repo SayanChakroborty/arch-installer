@@ -72,13 +72,13 @@ echo -e "\nPerforming Initialization of Pacman Keyring...\n"
 
 sleep 2
 
-echo -e "keyserver hkps://keys.openpgp.org\n" >> /etc/pacman.d/gnupg/gpg.conf
+echo -e "keyserver hkp://pool.sks-keyservers.net\n" >> /etc/pacman.d/gnupg/gpg.conf
 
 pacman-key --init
 
-pacman-key --refresh-keys
-
 pacman-key --populate archlinux
+
+pacman-key --refresh-keys
 
 echo -e "\nDone.\n\n"
 
