@@ -92,8 +92,6 @@ sleep 2
 
 sed -i 's/#Color/Color/; s/#TotalDownload/TotalDownload/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
 
-echo -e "\n[repo-ck]\nServer = http://repo-ck.com/\$arch\n" >> /etc/pacman.conf
-
 pacman -Syy --noconfirm
 
 echo -e "\nDone.\n\n"
