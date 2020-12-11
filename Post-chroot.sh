@@ -188,8 +188,6 @@ sed -i '/^MODULES/ s/(.*)/(i915)/' /etc/mkinitcpio.conf
 
 sed -i '/^HOOKS/ s/udev/systemd sd-plymouth/' /etc/mkinitcpio.conf
 
-mkinitcpio -P
-
 sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /usr/lib/systemd/system/systemd-fsck*
 
 plymouth-set-default-theme -R bgrt
