@@ -41,10 +41,10 @@ n
 
 t
 1
-1
+"EFI System"
 t
 2
-24
+"Linux root (x86-64)"
 w
 EOL
 
@@ -74,7 +74,7 @@ echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
 sleep 2
 
-reflector --protocol http --score 50 --sort rate --save /etc/pacman.d/mirrorlist --verbose
+reflector --protocol http --score 10 --sort rate --save /etc/pacman.d/mirrorlist --verbose
 
 sleep 2
 
