@@ -14,9 +14,7 @@ pacman-key --init
 
 pacman-key --populate archlinux
 
-pacman-key --refresh-keys
-
-pacman-key -r 5EE46C4C && pacman-key --lsign-key 5EE46C4C
+pacman-key -r 5EE46C4C --keyserver hkp://pool.sks-keyservers.net && pacman-key --lsign-key 5EE46C4C
 
 pacman -Syyu --noconfirm
 
