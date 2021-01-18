@@ -134,6 +134,10 @@ sudo -u $user makepkg -si --noconfirm
 
 sudo -u $user yay -Syyu --noconfirm
 
+cd /
+
+rm -rf /home/$user/AUR
+
 echo -e "\nDone.\n\n"
 
 
