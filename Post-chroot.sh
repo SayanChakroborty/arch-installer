@@ -208,6 +208,12 @@ sysctl -p
 
 echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
 
+mkdir -p /home/$user/.config/autostart-scripts/
+
+echo -e "#!/bin/sh\n/usr/bin/sleep 10 && /usr/bin/krunner --daemon" > /home/$user/.config/autostart-scripts/krunner_bg
+
+chmod a+x /home/$user/.config/autostart-scripts/krunner_bg
+
 cat << EOT >> /home/$user/.zshrc
 autoload -Uz promptinit
 promptinit
