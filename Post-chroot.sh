@@ -159,40 +159,42 @@ echo -e "\nDone.\n\n"
 
 
 
-#echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-#echo -e "\nConfiguring Plymouth...\n"
+echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nConfiguring Plymouth...\n"
 
-#sleep 2
+sleep 2
 
-#sudo -u $user yay -S --noconfirm plymouth
+sudo -u $user yay -S --noconfirm plymouth
 
-#sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet splash loglevel=3 vga=current rd.systemd.show_status=auto rd.udev.log_priority=3 vt.global_cursor_default=0 i915.fastboot=1"/' /etc/default/grub
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet loglevel=2 rd.systemd.show_status=false rd.udev.log_priority=2 vt.global_cursor_default=0 splash i915.fastboot=1"/' /etc/default/grub
 
-#sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
+sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
 
-#touch /home/$user/.hushlogin
+touch /home/$user/.hushlogin
 
-#echo "kernel.printk = 3 3 3 3" >> /etc/sysctl.d/20-quiet-printk.conf
+echo "kernel.printk = 3 3 3 3" >> /etc/sysctl.d/20-quiet-printk.conf
 
-#mkdir /etc/systemd/system/getty@tty1.service.d/
+mkdir /etc/systemd/system/getty@tty1.service.d/
 
-#cat << EOT >> /etc/systemd/system/getty@tty1.service.d/skip-prompt.conf
-#[Service]
-#ExecStart=
-#ExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin username --noclear %I $TERM
-#EOT
+echo -e "[Service]\nExecStart=\nExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin $user --noclear %I $TERM" > /etc/systemd/system/getty@tty1.service.d/skip-prompt.conf
 
-#sed -i '/^MODULES/ s/(.*)/(i915)/' /etc/mkinitcpio.conf
+sed -i '/^MODULES/ s/(.*)/(i915)/' /etc/mkinitcpio.conf
 
-#sed -i '/^HOOKS/ s/udev/systemd sd-plymouth/' /etc/mkinitcpio.conf
+sed -i '/^HOOKS/ s/udev/systemd sd-plymouth/' /etc/mkinitcpio.conf
 
-#sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /usr/lib/systemd/system/systemd-fsck*
+cp /usr/lib/systemd/system/systemd-fsck-root.service /etc/systemd/system/systemd-fsck-root.service
 
-#plymouth-set-default-theme -R bgrt
+cp "/usr/lib/systemd/system/systemd-fsck@.service" "/etc/systemd/system/systemd-fsck@.service"
 
-#grub-mkconfig -o /boot/grub/grub.cfg
+sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /etc/systemd/system/systemd-fsck*.service
 
-#echo -e "\nDone.\n\n"
+plymouth-set-default-theme -R bgrt
+
+sed -i '' /etc/default/grub
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+echo -e "\nDone.\n\n"
 
 
 
@@ -234,7 +236,7 @@ EOT
 
 sed -i '/^#governor/ s/#//; /^governor/ s/ondemand/performance/' /etc/default/cpupower
 
-systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
+systemctl enable sddm-plymouth NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
 
 pkgfile --update
 
