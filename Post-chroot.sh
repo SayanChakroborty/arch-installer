@@ -62,18 +62,18 @@ echo -e "$rtpw\n$rtpw" | passwd root
 
 echo -e "\nCreating New User...\n"
 
-useradd -m -G wheel -s /bin/zsh $user
+useradd -m -G sudo -s /bin/zsh $user
 
 echo -e "$uspw\n$uspw" | passwd $user
 
-echo -e "root ALL=(ALL) NOPASSWD: ALL\n%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/00_nopasswd
+echo -e "root ALL=(ALL) NOPASSWD: ALL\n%sudo ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/00_nopasswd
 
 cat << EOT >> /etc/polkit-1/rules.d/49-nopasswd_global.rules
-/* Allow members of the wheel group to execute any actions
+/* Allow members of the sudo group to execute any actions
  * without password authentication, similar to "sudo NOPASSWD:"
  */
 polkit.addRule(function(action, subject) {
-    if (subject.isInGroup("wheel")) {
+    if (subject.isInGroup("sudo")) {
         return polkit.Result.YES;
     }
 });
