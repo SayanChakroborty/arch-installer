@@ -190,8 +190,6 @@ sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /etc/s
 
 plymouth-set-default-theme -R bgrt
 
-sed -i '' /etc/default/grub
-
 grub-mkconfig -o /boot/grub/grub.cfg
 
 echo -e "\nDone.\n\n"
