@@ -74,11 +74,7 @@ echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
 sleep 2
 
-reflector --protocol http --score 10 --sort rate --save /etc/pacman.d/mirrorlist --verbose
-
-sleep 2
-
-sed -i '1s/^/Server = http\:\/\/mirror.osbeck.com\/archlinux\/\$repo\/os\/\$arch\nServer = http\:\/\/mirrors.dotsrc.org\/archlinux\/\$repo\/os\/\$arch\n/' /etc/pacman.d/mirrorlist
+sed -i '1s/^/Server = https\:\/\/mirror.osbeck.com\/archlinux\/\$repo\/os\/\$arch\nServer = https\:\/\/mirrors.dotsrc.org\/archlinux\/\$repo\/os\/\$arch\n/' /etc/pacman.d/mirrorlist
 
 echo -e "\nDone.\n\n"
 
