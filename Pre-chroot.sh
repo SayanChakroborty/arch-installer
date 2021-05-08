@@ -29,26 +29,11 @@ echo -e "\nFormatting Partitions...\n"
 
 wipefs --all /dev/sda
 
-fdisk --wipe always --wipe-partitions always /dev/sda << EOL
-g
-n
-1
+sgdisk -n 0:0:+512MiB -t 0:ef00 -c 0:BOOT /dev/sda
 
-+260M
-n
-2
+sgdisk -n 0:0:0 -t 0:8304 -c 0:ROOT /dev/sda
 
-
-t
-1
-"EFI System"
-t
-2
-"Linux root (x86-64)"
-w
-EOL
-
-mkfs.fat -F 32 -n "ESP" /dev/sda1
+mkfs.fat -F 32 -n "BOOT" /dev/sda1
 
 mkfs.ext4 -L "ROOT" -F /dev/sda2
 
@@ -74,7 +59,7 @@ echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
 sleep 2
 
-sed -i '1s/^/Server = https\:\/\/mirror.osbeck.com\/archlinux\/\$repo\/os\/\$arch\nServer = https\:\/\/mirrors.dotsrc.org\/archlinux\/\$repo\/os\/\$arch\n/' /etc/pacman.d/mirrorlist
+sed -i '1s/^/Server = http\:\/\/mirror.osbeck.com\/archlinux\/\$repo\/os\/\$arch\nServer = http\:\/\/mirrors.dotsrc.org\/archlinux\/\$repo\/os\/\$arch\n/' /etc/pacman.d/mirrorlist
 
 echo -e "\nDone.\n\n"
 
@@ -118,9 +103,9 @@ mount /dev/sda2 /mnt
 
 rm -rf /mnt/lost*
 
-mkdir /mnt/efi
+mkdir /mnt/boot
 
-mount /dev/sda1 /mnt/efi
+mount /dev/sda1 /mnt/boot
 
 echo -e "\nDone.\n\n"
 
@@ -170,7 +155,7 @@ umount -a
 
 sleep 2
 
-echo -e "\nInstallation Complete.\n\n"
+echo -e "\nInstallation Complete.\n\nSystem will now reboot..."
 
 sleep 10
 
