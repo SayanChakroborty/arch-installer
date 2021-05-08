@@ -150,7 +150,7 @@ sleep 2
 
 mkinitcpio -P
 
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 
 grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -166,7 +166,7 @@ sleep 2
 
 sudo -u $user yay -S --noconfirm plymouth
 
-sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet loglevel=2 rd.systemd.show_status=false rd.udev.log_priority=2 vt.global_cursor_default=0 splash i915.fastboot=1"/' /etc/default/grub
+sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_priority=0 vt.global_cursor_default=0 splash i915.fastboot=1"/' /etc/default/grub
 
 sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
 
