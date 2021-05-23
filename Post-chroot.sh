@@ -20,7 +20,7 @@ pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlis
 
 echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 
-sed -i "1s/^/Server = https:\/\/es-mirror.chaotic.cx\/\$repo\/\$arch\n/" /etc/pacman.d/chaotic-mirrorlist
+echo -e "Server = https://es-mirror.chaotic.cx/\$repo/\$arch\n" > /etc/pacman.d/chaotic-mirrorlist
 
 pacman -Syyu --noconfirm
 
