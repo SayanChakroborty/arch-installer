@@ -105,7 +105,7 @@ sleep 2
 
 echo -e "--save /etc/pacman.d/mirrorlist\n--country Sweden,Denmark\n--protocol https\n--score 10\n" > /etc/xdg/reflector/reflector.conf
 
-systemctl start reflector.service
+reflector --save /etc/pacman.d/mirrorlist --country Sweden,Denmark --protocol https --score 10 --verbose
 
 echo -e "\nDone.\n\n"
 
@@ -129,7 +129,7 @@ echo -e "\nGenerating FSTab...\n"
 
 sleep 2
 
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -L /mnt >> /mnt/etc/fstab
 
 echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
 
