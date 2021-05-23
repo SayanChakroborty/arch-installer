@@ -166,7 +166,7 @@ sleep 2
 
 bootctl --path=/boot install
 
-echo -e "default arch.conf\ntimeout 4\nconsole-mode auto\neditor no\n" > /boot/loader/loader.conf
+echo -e "default arch.conf\ntimeout 0\nconsole-mode auto\neditor no\n" > /boot/loader/loader.conf
 
 echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 splash=silent i915.fastboot=1" > /boot/loader/entries/arch.conf
 
