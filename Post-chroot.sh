@@ -16,7 +16,7 @@ pacman-key --recv-key 3056513887B78AEB
 
 pacman-key --lsign-key 3056513887B78AEB
 
-pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst'
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst'
 
 echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 
@@ -128,32 +128,6 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring AUR...\n"
-
-sleep 2
-
-sudo -u $user mkdir /home/$user/AUR/
-
-cd /home/$user/AUR/
-
-sudo -u $user git clone https://aur.archlinux.org/yay-bin.git
-
-cd ./yay-bin
-
-sudo -u $user makepkg -si --noconfirm
-
-sudo -u $user yay -Syyu --noconfirm
-
-cd /
-
-rm -rf /home/$user/AUR
-
-echo -e "\nDone.\n\n"
-
-
-
-
-echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Plymouth...\n"
 
 sleep 2
@@ -192,7 +166,7 @@ sleep 2
 
 bootctl --path=/boot install
 
-echo -e "default arch.conf\ntimeout 4\nconsole-mode max\neditor no\n" > /boot/loader/loader.conf
+echo -e "default arch.conf\ntimeout 4\nconsole-mode auto\neditor no\n" > /boot/loader/loader.conf
 
 echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 splash=silent i915.fastboot=1" > /boot/loader/entries/arch.conf
 
