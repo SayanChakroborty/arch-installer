@@ -33,9 +33,9 @@ sgdisk -n 0:0:+512MiB -t 0:ef00 -c 0:BOOT /dev/sda
 
 sgdisk -n 0:0:0 -t 0:8304 -c 0:ROOT /dev/sda
 
-mkfs.fat -F 32 -n "BOOT" /dev/sda1
+mkfs.fat -F 32 -n "ESP" /dev/sda1
 
-mkfs.ext4 -L "ROOT" -F /dev/sda2
+mkfs.ext4 -L "System" -F /dev/sda2
 
 echo -e "\nDone.\n\n"
 
