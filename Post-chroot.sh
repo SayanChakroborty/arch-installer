@@ -12,6 +12,16 @@ pacman-key --init
 
 pacman-key --populate archlinux
 
+pacman-key --recv-key 3056513887B78AEB
+
+pacman-key --lsign-key 3056513887B78AEB
+
+pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst'
+
+echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
+
+sed -i "1s/^/Server = https:\/\/es-mirror.chaotic.cx\/\$repo\/\$arch\n/" /etc/pacman.d/chaotic-mirrorlist
+
 pacman -Syyu --noconfirm
 
 echo -e "\nDone.\n\n"
@@ -144,31 +154,11 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring Bootloader...\n"
-
-sleep 2
-
-mkinitcpio -P
-
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
-
-grub-mkconfig -o /boot/grub/grub.cfg
-
-echo -e "\nDone.\n\n"
-
-
-
-
-echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Plymouth...\n"
 
 sleep 2
 
-sudo -u $user yay -S --noconfirm plymouth
-
-sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/ s/".*"/"quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_priority=0 vt.global_cursor_default=0 splash i915.fastboot=1"/' /etc/default/grub
-
-sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
+pacman -S --noconfirm plymouth-git
 
 touch /home/$user/.hushlogin
 
@@ -182,7 +172,7 @@ sed -i '/^MODULES/ s/(.*)/(i915)/' /etc/mkinitcpio.conf
 
 sed -i '/^HOOKS/ s/udev/systemd sd-plymouth/' /etc/mkinitcpio.conf
 
-cp /usr/lib/systemd/system/systemd-fsck-root.service /etc/systemd/system/systemd-fsck-root.service
+cp "/usr/lib/systemd/system/systemd-fsck-root.service" "/etc/systemd/system/systemd-fsck-root.service"
 
 cp "/usr/lib/systemd/system/systemd-fsck@.service" "/etc/systemd/system/systemd-fsck@.service"
 
@@ -190,7 +180,21 @@ sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /etc/s
 
 plymouth-set-default-theme -R bgrt
 
-grub-mkconfig -o /boot/grub/grub.cfg
+echo -e "\nDone.\n\n"
+
+
+
+
+echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nConfiguring Bootloader...\n"
+
+sleep 2
+
+bootctl --path=/boot install
+
+echo -e "default arch.conf\ntimeout 4\nconsole-mode max\neditor no\n" > /boot/loader/loader.conf
+
+echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 splash=silent i915.fastboot=1" > /boot/loader/entries/arch.conf
 
 echo -e "\nDone.\n\n"
 
