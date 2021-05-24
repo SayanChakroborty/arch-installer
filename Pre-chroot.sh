@@ -129,7 +129,7 @@ echo -e "\nGenerating FSTab...\n"
 
 sleep 2
 
-genfstab -L /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >> /mnt/etc/fstab
 
 echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
 
