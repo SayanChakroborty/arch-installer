@@ -22,6 +22,10 @@ echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacm
 
 echo -e "Server = https://es-mirror.chaotic.cx/\$repo/\$arch\n" > /etc/pacman.d/chaotic-mirrorlist
 
+echo -e "--save /etc/pacman.d/mirrorlist\n--country Sweden,Denmark\n--protocol https\n--score 10\n" > /etc/xdg/reflector/reflector.conf
+
+reflector --save /etc/pacman.d/mirrorlist --country Sweden,Denmark --protocol https --score 10 --verbose
+
 pacman -Syyu --noconfirm
 
 echo -e "\nDone.\n\n"
