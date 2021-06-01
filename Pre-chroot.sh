@@ -45,8 +45,6 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nStarting NTP Daemon...\n"
 
-sleep 2
-
 timedatectl set-ntp true
 
 echo -e "\nDone.\n\n"
@@ -57,8 +55,6 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nModifying Pacman Configuration...\n"
 
-sleep 2
-
 sed -i 's/#Color/Color/; s/#TotalDownload/TotalDownload/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
 
 echo -e "\nDone.\n\n"
@@ -68,8 +64,6 @@ echo -e "\nDone.\n\n"
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nPerforming Initialization of Pacman Keyring...\n"
-
-sleep 2
 
 pacman-key --init
 
@@ -82,8 +76,6 @@ echo -e "\nDone.\n\n"
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nMounting Partitions...\n"
-
-sleep 2
 
 mount /dev/sda2 /mnt
 
@@ -101,8 +93,6 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
-sleep 2
-
 echo -e "--save /etc/pacman.d/mirrorlist\n--country Sweden,Denmark\n--protocol https\n--score 10\n" > /etc/xdg/reflector/reflector.conf
 
 reflector --save /etc/pacman.d/mirrorlist --country Sweden,Denmark --protocol https --score 10 --verbose
@@ -115,8 +105,6 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nPerforming Pacstrap Operation...\n"
 
-sleep 2
-
 pacstrap /mnt base base-devel linux linux-docs linux-headers linux-firmware linux-tools-meta nano man-db man-pages texinfo dialog dhcpcd dnsmasq wpa_supplicant efibootmgr intel-ucode xorg xf86-input-libinput xf86-input-synaptics xf86-video-fbdev xf86-video-vesa xf86-video-intel xf86-video-amdgpu mesa lib32-mesa intel-media-driver libva-intel-driver lib32-libva-intel-driver libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libva-vdpau-driver lib32-libva-vdpau-driver libvdpau-va-gl vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-radeon lib32-vulkan-radeon amdvlk lib32-amdvlk ffmpeg gst-libav gst-plugins-base lib32-gst-plugins-base gst-plugins-good lib32-gst-plugins-good gst-plugins-bad gst-plugins-ugly libde265 gstreamer-vaapi bdf-unifont ttf-bitstream-vera ttf-croscore ttf-dejavu ttf-liberation ttf-droid gnu-free-fonts ttf-linux-libertine noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-roboto ttf-ubuntu-font-family ttf-opensans cantarell-fonts inter-font wqy-microhei wqy-zenhei wqy-bitmapfont otf-ipafont zsh zsh-doc grml-zsh-config zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-lovers zsh-theme-powerlevel10k powerline plasma-meta kde-applications-meta packagekit-qt5 fwupd cpupower haveged hunspell hunspell-en_US xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-kde libappindicator-gtk2 libappindicator-gtk3 lib32-libappindicator-gtk2 lib32-libappindicator-gtk3 appmenu-gtk-module xsettingsd autorandr reflector pacman-contrib pkgstats pkgfile neofetch htop git make cmake firewalld android-tools android-file-transfer mtpfs
 
 echo -e "\nDone.\n\n"
@@ -127,21 +115,15 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nGenerating FSTab...\n"
 
-sleep 2
-
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -L /mnt >> /mnt/etc/fstab
 
 echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
-
-sleep 2
 
 
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nStarting Post-chroot step...\n"
-
-sleep 2
 
 cp ./passwords /mnt/root/
 
@@ -153,9 +135,7 @@ arch-chroot /mnt /root/Post-chroot.sh
 
 umount -a
 
-sleep 2
-
-echo -e "\nInstallation Complete.\n\nSystem will now reboot..."
+echo -e "\nInstallation Complete.\n\nSystem will now reboot in 10 seconds..."
 
 sleep 10
 
