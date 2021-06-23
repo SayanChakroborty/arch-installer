@@ -2,9 +2,9 @@
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nUpdating Pacman Configuration...\n"
+echo -e "\nUpdating Pacman Configuration (this time for installation destination system)...\n"
 
-sed -i 's #Color Color ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }; s #ParallelDownloads ParallelDownloads ' /etc/pacman.conf
+sed -i 's #Color Color ; s #ParallelDownloads ParallelDownloads ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }' /etc/pacman.conf
 
 pacman-key --init
 
@@ -22,9 +22,19 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nReading all fields from the file confidentials...\n"
+
+read -r user uspw rtpw host tmzn < /root/confidentials
+
+echo -e "\nDone.\n\n"
+
+
+
+
+echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nSetting Localtime...\n"
 
-ln -sf /usr/share/zoneinfo/Asia/Kolkata /etc/localtime
+ln -sf /usr/share/zoneinfo/$tmzn /etc/localtime
 
 hwclock --systohc
 
@@ -36,6 +46,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Locale...\n"
 
+# enable US English language and locale (might be necessary for some programs like steam)
 sed -i 's #en_US.UTF-8 en_US.UTF-8 ' /etc/locale.gen
 
 locale-gen
@@ -50,20 +61,23 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nAccount Management...\n"
 
-read -r user uspw rtpw host < /root/passwords
-
+# set hostname
 echo -e "$host" > /etc/hostname
 
+# set root password
 echo -e "$rtpw\n$rtpw" | passwd root
 
 echo -e "\nCreating New User...\n"
 
 useradd -m -G wheel -s /bin/zsh $user
 
+# set user password
 echo -e "$uspw\n$uspw" | passwd $user
 
+# bypass sudo password prompt
 echo -e "root ALL=(ALL) NOPASSWD: ALL\n%wheel ALL=(ALL) NOPASSWD: ALL\n" > /etc/sudoers.d/00_nopasswd
 
+# bypass polkit password prompt
 cat << EOT >> /etc/polkit-1/rules.d/49-nopasswd_global.rules
 /* Allow members of the wheel group to execute any actions
  * without password authentication, similar to "sudo NOPASSWD:"
@@ -178,7 +192,7 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring Bootloader...\n"
+echo -e "\nConfiguring Bootloader (systemd-boot) ...\n"
 
 bootctl --path=/boot install
 
@@ -194,6 +208,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nFinishing Touch...\n"
 
+# adjust swappiness value to increase I/O performance (modify to change desired values)
 echo -e "\nvm.swappiness = 0\nvm.dirty_background_bytes = 4194304\nvm.dirty_bytes = 4194304\n" >> /etc/sysctl.conf
 
 sysctl -p
