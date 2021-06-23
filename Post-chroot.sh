@@ -18,7 +18,7 @@ pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyri
 
 echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
 
-echo -e "Server = https://es-mirror.chaotic.cx/\$repo/\$arch\n" > /etc/pacman.d/chaotic-mirrorlist
+sed -i '1 s|^|Server = https://es-mirror.chaotic.cx/$repo/$arch\n|' /etc/pacman.d/chaotic-mirrorlist
 
 echo -e "--save /etc/pacman.d/mirrorlist\n--country Sweden,Denmark\n--protocol https\n--score 10\n" > /etc/xdg/reflector/reflector.conf
 
@@ -128,6 +128,14 @@ echo -e "\nConfiguring Plymouth...\n"
 
 pacman -S --noconfirm plymouth-git
 
+if [ -z "$(pacman -Qs plymouth)" ]
+
+then
+
+echo -e "\nCould not install plymouth\n"
+
+else
+
 touch /home/$user/.hushlogin
 
 echo "kernel.printk = 3 3 3 3" >> /etc/sysctl.d/20-quiet-printk.conf
@@ -147,6 +155,8 @@ cp "/usr/lib/systemd/system/systemd-fsck@.service" "/etc/systemd/system/systemd-
 sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /etc/systemd/system/systemd-fsck*.service
 
 plymouth-set-default-theme -R bgrt
+
+fi
 
 echo -e "\nDone.\n\n"
 
@@ -202,7 +212,19 @@ EOT
 
 sed -i '/^#governor/ s/#//; /^governor/ s/ondemand/performance/' /etc/default/cpupower
 
-systemctl enable sddm-plymouth NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
+systemctl enable NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
+
+if [ -z "$(pacman -Qs plymouth)" ]
+
+then
+
+systemctl enable sddm
+
+else
+
+systemctl enable sddm-plymouth
+
+fi
 
 pkgfile --update
 
