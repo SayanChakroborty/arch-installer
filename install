@@ -38,8 +38,8 @@ wipefs --all /dev/sda
 # create a new EFI system partition of size 512 MiB with partition label as "BOOT"
 sgdisk -n 0:0:+512M -t 0:ef00 -c 0:BOOT /dev/sda
 
-# create a new Linux x86-64 root (/) partition of size 30 GiB with partition label as "ROOT"
-sgdisk -n 0:0:+30G -t 0:8304 -c 0:ROOT /dev/sda
+# create a new Linux x86-64 root (/) partition of size 50 GiB with partition label as "ROOT"
+sgdisk -n 0:0:+50G -t 0:8304 -c 0:ROOT /dev/sda
 
 # create a new Linux /home partition on the remaining space of the disk with partition label as "HOME"
 sgdisk -n 0:0:0 -t 0:8302 -c 0:HOME /dev/sda
@@ -140,32 +140,32 @@ echo -e "\nGenerating FSTab...\n"
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
-echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
+echo -e "\nDone.\n\nBase installation is now complete.\n\n"
 
 
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nStarting post-chroot step...\n"
+echo -e "\nStarting configuration step...\n"
 
-# copy the passwords file to destination system's root partition so that post-chroot script can access the file from inside of chroot
+# copy the confidentials file to destination system's root partition so that config script can access the file from inside of chroot
 cp ./confidentials /mnt/root/
 
-# copy the post-chroot script to destination system's root partition
-cp ./post-chroot /mnt/root/
+# copy the config script to destination system's root partition
+cp ./config /mnt/root/
 
-# change file permission of post-chroot script to make it executable
-chmod a+x /mnt/root/post-chroot
+# change file permission of config script to make it executable
+chmod a+x /mnt/root/config
 
-# run post-chroot script from inside of chroot
-arch-chroot /mnt /root/post-chroot
+# run config script from inside of chroot
+arch-chroot /mnt /root/config
 
 # remove files that are unnecessary now
-rm /mnt/root/{confidentials,post-chroot}
+rm /mnt/root/{confidentials,config}
 
 umount -a
 
-echo -e "\nInstallation Complete.\n\nSystem will now reboot in 10 seconds..."
+echo -e "\nInstallation Complete.\n\nSystem will reboot in 10 seconds..."
 
 sleep 10
 
