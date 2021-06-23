@@ -16,12 +16,12 @@ The script will ask user for username, user password, root password, hostname an
 
 (1) Edit and adjust the file "pkgs" for desired packages to be installed
 
-(2) Make the "pre-chroot" script executable
+(2) Make the "install" script executable
 
-    chmod a+x ./pre-chroot
+    chmod a+x ./install
 #
-(3) Execute "pre-chroot"
+(3) Execute "install"
 
-    ./pre-chroot
+    ./install
 #
 (4) Sit back and wait for the installation to finish (depending on your internet speed). post-chroot steps will run automatically at the end of pre-chroot process. System will automatically reboot after setup is complete.
