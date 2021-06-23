@@ -4,21 +4,11 @@
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nUpdating Pacman Configuration...\n"
 
-sed -i 's/#Color/Color/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
+sed -i 's #Color Color ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }; s #ParallelDownloads ParallelDownloads ' /etc/pacman.conf
 
 pacman-key --init
 
 pacman-key --populate archlinux
-
-pacman-key --recv-key 3056513887B78AEB
-
-pacman-key --lsign-key 3056513887B78AEB
-
-pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-'{keyring,mirrorlist}'.pkg.tar.zst'
-
-echo -e "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
-
-sed -i '1 s|^|Server = https://es-mirror.chaotic.cx/$repo/$arch\n|' /etc/pacman.d/chaotic-mirrorlist
 
 echo -e "--save /etc/pacman.d/mirrorlist\n--country Sweden,Denmark\n--protocol https\n--score 10\n" > /etc/xdg/reflector/reflector.conf
 
@@ -46,7 +36,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Locale...\n"
 
-sed -i 's/#en_US.UTF-8/en_US.UTF-8/; s/#en_IN/en_IN/' /etc/locale.gen
+sed -i 's #en_US.UTF-8 en_US.UTF-8 ' /etc/locale.gen
 
 locale-gen
 
@@ -60,7 +50,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nAccount Management...\n"
 
-read -r user rtpw uspw host < /root/passwords
+read -r user uspw rtpw host < /root/passwords
 
 echo -e "$host" > /etc/hostname
 
@@ -124,11 +114,35 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo -e "\nConfiguring AUR...\n"
+
+sudo -u $user mkdir /home/$user/AUR/
+
+cd /home/$user/AUR/
+
+sudo -u $user git clone https://aur.archlinux.org/yay-bin.git
+
+cd ./yay-bin
+
+sudo -u $user makepkg -si --noconfirm
+
+sudo -u $user yay -Syyu --noconfirm
+
+cd /
+
+rm -rf /home/$user/AUR
+
+echo -e "\nDone.\n\n"
+
+
+
+
+echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Plymouth...\n"
 
-pacman -S --noconfirm plymouth-git
+sudo -u $user yay -S --noconfirm plymouth-git
 
-if [ -z "$(pacman -Qs plymouth)" ]
+if [ -z "$(pacman -Qs plymouth-git)" ]
 
 then
 
@@ -210,7 +224,7 @@ autoload -Uz run-help
 alias help=run-help
 EOT
 
-sed -i '/^#governor/ s/#//; /^governor/ s/ondemand/performance/' /etc/default/cpupower
+sed -i '/^#governor/ s #  ; /^governor/ s ondemand performance ' /etc/default/cpupower
 
 systemctl enable NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
 
