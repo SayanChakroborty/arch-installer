@@ -6,19 +6,19 @@ echo -e "\nEnter username to be created:\n"
 
 read user
 
-echo -e "\nCreate new password for user $user:\n"
+echo -e "\nEnter new password for $user:\n"
 
 read uspw
 
-echo -e "\nCreate new password for root:\n"
+echo -e "\nEnter new password for root:\n"
 
 read rtpw
 
-echo -e "\nCreate hostname:\n"
+echo -e "\nEnter new hostname (device name):\n"
 
 read host
 
-echo -e "$user $rtpw $uspw $host" > ./passwords
+echo -e "$user $uspw $rtpw $host" > ./passwords
 
 echo -e "\nDone.\n\n"
 
@@ -55,7 +55,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nModifying Pacman Configuration...\n"
 
-sed -i 's/#Color/Color/; s/#TotalDownload/TotalDownload/; s/#\[multilib\]/\[multilib\]/; /\[multilib\]/{N;s/#Include/Include/}' /etc/pacman.conf
+sed -i 's #Color Color ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }; s #ParallelDownloads ParallelDownloads ' /etc/pacman.conf
 
 echo -e "\nDone.\n\n"
 
@@ -123,15 +123,15 @@ echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nStarting Post-chroot step...\n"
+echo -e "\nStarting post-chroot step...\n"
 
 cp ./passwords /mnt/root/
 
-cp ./Post-chroot.sh /mnt/root/
+cp ./post-chroot.sh /mnt/root/
 
-chmod a+x /mnt/root/Post-chroot.sh
+chmod a+x /mnt/root/post-chroot.sh
 
-arch-chroot /mnt /root/Post-chroot.sh
+arch-chroot /mnt /root/post-chroot.sh
 
 umount -a
 
