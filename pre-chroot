@@ -18,8 +18,12 @@ echo -e "\nEnter new hostname (device name):\n"
 
 read host
 
+echo -e "\nEnter desired timezone in format of Country/Region (the list of all timezones can be found by first switching to different virtual console using Alt+arrow shorcut and issuing command \"ls /usr/share/zoneinfo/*/* | less\"):\n"
+
+read tmzn
+
 # save these inputs in a file from which the respective fields will be sourced later
-echo -e "$user $uspw $rtpw $host" > ./passwords
+echo -e "$user $uspw $rtpw $host $tmzn" > ./confidentials
 
 echo -e "\nDone.\n\n"
 
@@ -144,20 +148,20 @@ echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nStarting post-chroot step...\n"
 
-# copy the passwords file to destination system's root partition so that post-chroot script can access the file from within chroot
-cp ./passwords /mnt/root/
+# copy the passwords file to destination system's root partition so that post-chroot script can access the file from inside of chroot
+cp ./confidentials /mnt/root/
 
 # copy the post-chroot script to destination system's root partition
-cp ./post-chroot.sh /mnt/root/
+cp ./post-chroot /mnt/root/
 
 # change file permission of post-chroot script to make it executable
-chmod a+x /mnt/root/post-chroot.sh
+chmod a+x /mnt/root/post-chroot
 
-# run post-chroot script from inside chroot
-arch-chroot /mnt /root/post-chroot.sh
+# run post-chroot script from inside of chroot
+arch-chroot /mnt /root/post-chroot
 
 # remove files that are unnecessary now
-rm /mnt/root/{passwords,post-chroot.sh}
+rm /mnt/root/{confidentials,post-chroot}
 
 umount -a
 
