@@ -24,4 +24,4 @@ The script will ask user for username, user password, root password, hostname an
 
     ./install
 #
-(4) Sit back and wait for the installation to finish (depending on your internet speed). post-chroot steps will run automatically at the end of pre-chroot process. System will automatically reboot after setup is complete.
+(4) Sit back and wait for the installation to finish (depending on your internet speed). The config script will run automatically at the end of base install process. System will automatically reboot after setup is complete.
