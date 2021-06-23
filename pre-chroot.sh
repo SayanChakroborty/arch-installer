@@ -123,7 +123,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nPerforming Pacstrap Operation...\n"
 
-# edit and adjust the "pkgs" file for desired packages (don't worry about any extra white spaces or new lines as they will be omitted using sed and tr)
+# edit and adjust the "pkgs" file for desired packages (don't worry about any extra white spaces or new lines or comments as they will be omitted using sed and tr)
 pacstrap /mnt $(cat pkgs | sed 's #.*$  g' | tr '\n' ' ')
 
 echo -e "\nDone.\n\n"
