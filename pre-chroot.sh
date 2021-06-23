@@ -18,6 +18,7 @@ echo -e "\nEnter new hostname (device name):\n"
 
 read host
 
+# save these inputs in a file from which the respective fields will be sourced later
 echo -e "$user $uspw $rtpw $host" > ./passwords
 
 echo -e "\nDone.\n\n"
@@ -27,15 +28,26 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nFormatting Partitions...\n"
 
+# wipe file system of the installation destination disk
 wipefs --all /dev/sda
 
-sgdisk -n 0:0:+512MiB -t 0:ef00 -c 0:BOOT /dev/sda
+# create a new EFI system partition of size 512 MiB with partition label as "BOOT"
+sgdisk -n 0:0:+512M -t 0:ef00 -c 0:BOOT /dev/sda
 
-sgdisk -n 0:0:0 -t 0:8304 -c 0:ROOT /dev/sda
+# create a new Linux x86-64 root (/) partition of size 30 GiB with partition label as "ROOT"
+sgdisk -n 0:0:+30G -t 0:8304 -c 0:ROOT /dev/sda
 
+# create a new Linux /home partition on the remaining space of the disk with partition label as "HOME"
+sgdisk -n 0:0:0 -t 0:8302 -c 0:HOME /dev/sda
+
+# format partition 1 as FAT32 with file system label "ESP"
 mkfs.fat -F 32 -n "ESP" /dev/sda1
 
+# format partition 2 as EXT4 with file system label "System"
 mkfs.ext4 -L "System" -F /dev/sda2
+
+# format partition 3 as EXT4 with file system label "Home"
+mkfs.ext4 -L "Home" -F /dev/sda3
 
 echo -e "\nDone.\n\n"
 
@@ -55,7 +67,8 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nModifying Pacman Configuration...\n"
 
-sed -i 's #Color Color ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }; s #ParallelDownloads ParallelDownloads ' /etc/pacman.conf
+# enable options "color", "ParallelDownloads", "multilib (32-bit) repository"
+sed -i 's #Color Color ; s #ParallelDownloads ParallelDownloads ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }' /etc/pacman.conf
 
 echo -e "\nDone.\n\n"
 
@@ -77,13 +90,17 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nMounting Partitions...\n"
 
+# mount the ROOT partition on "/mnt"
 mount /dev/sda2 /mnt
 
-rm -rf /mnt/lost*
+# create necessary directories
+mkdir /mnt/{boot,home}
 
-mkdir /mnt/boot
-
+# mount the EFI system partition on "/mnt/boot"
 mount /dev/sda1 /mnt/boot
+
+# mount the HOME partition on "/mnt/home"
+mount /dev/sda3 /mnt/home
 
 echo -e "\nDone.\n\n"
 
@@ -93,6 +110,7 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nAdding Fastest Mirror in Pacman Mirrorlist...\n"
 
+# save preferred configuration for the reflector systemd service
 echo -e "--save /etc/pacman.d/mirrorlist\n--country Sweden,Denmark\n--protocol https\n--score 10\n" > /etc/xdg/reflector/reflector.conf
 
 reflector --save /etc/pacman.d/mirrorlist --country Sweden,Denmark --protocol https --score 10 --verbose
@@ -105,7 +123,8 @@ echo -e "\nDone.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nPerforming Pacstrap Operation...\n"
 
-pacstrap /mnt base base-devel linux linux-docs linux-headers linux-firmware linux-tools-meta nano man-db man-pages texinfo dialog dhcpcd dnsmasq wpa_supplicant efibootmgr intel-ucode xorg xf86-input-libinput xf86-video-amdgpu mesa lib32-mesa intel-media-driver libva-intel-driver lib32-libva-intel-driver libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau libva-vdpau-driver lib32-libva-vdpau-driver libvdpau-va-gl vulkan-icd-loader lib32-vulkan-icd-loader vulkan-intel lib32-vulkan-intel vulkan-radeon lib32-vulkan-radeon amdvlk lib32-amdvlk ffmpeg gst-libav gst-plugins-base lib32-gst-plugins-base gst-plugins-good lib32-gst-plugins-good gst-plugins-bad gst-plugins-ugly libde265 gstreamer-vaapi bdf-unifont ttf-bitstream-vera ttf-croscore ttf-dejavu ttf-liberation ttf-droid gnu-free-fonts ttf-linux-libertine noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-roboto ttf-ubuntu-font-family ttf-opensans cantarell-fonts inter-font wqy-microhei wqy-zenhei wqy-bitmapfont otf-ipafont zsh zsh-doc grml-zsh-config zsh-autosuggestions zsh-completions zsh-history-substring-search zsh-syntax-highlighting zsh-lovers zsh-theme-powerlevel10k powerline plasma-meta kde-applications-meta packagekit-qt5 fwupd cpupower haveged hunspell hunspell-en_US xdg-user-dirs xdg-desktop-portal xdg-desktop-portal-kde libappindicator-gtk2 libappindicator-gtk3 lib32-libappindicator-gtk2 lib32-libappindicator-gtk3 appmenu-gtk-module xsettingsd autorandr reflector pacman-contrib pkgstats pkgfile neofetch htop git make cmake firewalld android-tools android-file-transfer mtpfs
+# edit and adjust the "pkgs" file for desired packages (don't worry about any extra white spaces or new lines as they will be omitted using sed and tr)
+pacstrap /mnt $(cat pkgs | sed 's #.*$  g' | tr '\n' ' ')
 
 echo -e "\nDone.\n\n"
 
@@ -125,13 +144,20 @@ echo -e "\nDone.\n\nPre-chroot step is now complete.\n\n"
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nStarting post-chroot step...\n"
 
+# copy the passwords file to destination system's root partition so that post-chroot script can access the file from within chroot
 cp ./passwords /mnt/root/
 
+# copy the post-chroot script to destination system's root partition
 cp ./post-chroot.sh /mnt/root/
 
+# change file permission of post-chroot script to make it executable
 chmod a+x /mnt/root/post-chroot.sh
 
+# run post-chroot script from inside chroot
 arch-chroot /mnt /root/post-chroot.sh
+
+# remove files that are unnecessary now
+rm /mnt/root/{passwords,post-chroot.sh}
 
 umount -a
 
