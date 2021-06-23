@@ -152,17 +152,7 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring Plymouth...\n"
-
-sudo -u $user yay -S --noconfirm plymouth-git
-
-if [ -z "$(pacman -Qs plymouth-git)" ]
-
-then
-
-echo -e "\nCould not install plymouth\n"
-
-else
+echo -e "\nConfiguring silent boot...\n"
 
 touch /home/$user/.hushlogin
 
@@ -172,19 +162,13 @@ mkdir /etc/systemd/system/getty@tty1.service.d/
 
 echo -e "[Service]\nExecStart=\nExecStart=-/usr/bin/agetty --skip-login --nonewline --noissue --autologin $user --noclear %I $TERM" > /etc/systemd/system/getty@tty1.service.d/skip-prompt.conf
 
-sed -i '/^MODULES/ s/(.*)/(i915)/' /etc/mkinitcpio.conf
-
-sed -i '/^HOOKS/ s/udev/systemd sd-plymouth/' /etc/mkinitcpio.conf
+sed -i '/^MODULES/ s (.*) (i915) ; /^HOOKS/ s udev systemd ' /etc/mkinitcpio.conf
 
 cp "/usr/lib/systemd/system/systemd-fsck-root.service" "/etc/systemd/system/systemd-fsck-root.service"
 
 cp "/usr/lib/systemd/system/systemd-fsck@.service" "/etc/systemd/system/systemd-fsck@.service"
 
 sed -i '/^ExecStart*/aStandardOutput=null\nStandardError=journal+console' /etc/systemd/system/systemd-fsck*.service
-
-plymouth-set-default-theme -R bgrt
-
-fi
 
 echo -e "\nDone.\n\n"
 
@@ -241,24 +225,12 @@ EOT
 
 sed -i '/^#governor/ s #  ; /^governor/ s ondemand performance ' /etc/default/cpupower
 
-systemctl enable NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
-
-if [ -z "$(pacman -Qs plymouth)" ]
-
-then
-
-systemctl enable sddm
-
-else
-
-systemctl enable sddm-plymouth
-
-fi
+systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
 
 pkgfile --update
 
 appstreamcli refresh-cache --force --verbose
 
-echo -e "\nFinally Done.\n\n"
+echo -e "\nAll Done.\n\n"
 
 exit
