@@ -69,7 +69,7 @@ echo -e "$rtpw\n$rtpw" | passwd root
 
 echo -e "\nCreating New User...\n"
 
-useradd -m -G wheel -s /bin/zsh $user
+useradd -m -G wheel -s /bin/bash $user
 
 # set user password
 echo -e "$uspw\n$uspw" | passwd $user
@@ -171,38 +171,26 @@ echo -e "\nvm.swappiness = 0\nvm.dirty_background_bytes = 4194304\nvm.dirty_byte
 
 sysctl -p
 
-echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
+# make gtk apps use qt file picker dialog (e.g. firefox will use qt file picker instead of gtk file picker) (default is disabled because enabling this option somehow screws up gtk theming)
+# echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
 
-cat << EOT >> /home/$user/.zshrc
-autoload -Uz promptinit
-promptinit
-prompt adam2
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-source /usr/share/doc/pkgfile/command-not-found.zsh
-autoload -Uz run-help
-alias help=run-help
-EOT
+# enable zsh plugins and prompts
+if (where zsh)
+then echo -e "autoload -Uz promptinit \n promptinit \n prompt adam2 \n source /usr/share/zsh/plugins/* \n source /usr/share/doc/pkgfile/command-not-found.zsh \n autoload -Uz run-help \n alias help=run-help" | tee /home/$user/.zshrc | tee /etc/zsh/zshrc
+fi
 
-cat << EOT >> /etc/zsh/zshrc
-autoload -Uz promptinit
-promptinit
-prompt adam2
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-source /usr/share/doc/pkgfile/command-not-found.zsh
-autoload -Uz run-help
-alias help=run-help
-EOT
+# set cpu frequency governor to performance mode on boot using systemd service provided by cpupower package
+if (where cpupower)
+then sed -i '/^#governor/ s #  ; /^governor/ s ondemand performance ' /etc/default/cpupower
+fi
 
-sed -i '/^#governor/ s #  ; /^governor/ s ondemand performance ' /etc/default/cpupower
-
+# enable systemd services
 systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
 
+# update pkgfile database
 pkgfile --update
 
+# packagekit appstream metadata force update
 appstreamcli refresh-cache --force --verbose
 
 echo -e "\nAll Done.\n\n"
