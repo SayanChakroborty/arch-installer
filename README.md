@@ -16,6 +16,7 @@ The script will ask user for username, user password, root password, hostname an
 
 (1) Edit and adjust the file "pkgs" for desired packages to be installed (don't worry about any extra white spaces or new lines or comments as they will be omitted using sed and tr)
 
+#
 (2) Make the "install" script executable
 
     chmod a+x ./install
