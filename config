@@ -156,7 +156,7 @@ bootctl --path=/boot install
 
 echo -e "default arch.conf\ntimeout 5\nconsole-mode auto\neditor yes\n" > /boot/loader/loader.conf
 
-echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw" > /boot/loader/entries/arch.conf
+echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen\ninitrd /intel-ucode.img\ninitrd /initramfs-linux-zen.img\noptions root="LABEL=System" rw" > /boot/loader/entries/arch.conf
 
 echo -e "\nDone.\n\n"
 
@@ -178,7 +178,7 @@ sysctl -p
 if (whereis zsh)
 then
 chsh -s /bin/zsh
-sudo -u $user chsh -s /bin/zsh
+echo -e "$uspw" | sudo -u $user chsh -s /bin/zsh
 echo -e "autoload -Uz promptinit \n promptinit \n prompt adam2 \n source /usr/share/zsh/plugins/* \n source /usr/share/doc/pkgfile/command-not-found.zsh \n autoload -Uz run-help \n alias help=run-help" | tee /home/$user/.zshrc | tee /etc/zsh/zshrc
 fi
 
