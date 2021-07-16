@@ -175,17 +175,21 @@ sysctl -p
 # echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
 
 # enable zsh plugins and prompts
-if (where zsh)
-then echo -e "autoload -Uz promptinit \n promptinit \n prompt adam2 \n source /usr/share/zsh/plugins/* \n source /usr/share/doc/pkgfile/command-not-found.zsh \n autoload -Uz run-help \n alias help=run-help" | tee /home/$user/.zshrc | tee /etc/zsh/zshrc
+if (whereis zsh)
+then
+chsh -s /bin/zsh
+sudo -u $user chsh -s /bin/zsh
+echo -e "autoload -Uz promptinit \n promptinit \n prompt adam2 \n source /usr/share/zsh/plugins/* \n source /usr/share/doc/pkgfile/command-not-found.zsh \n autoload -Uz run-help \n alias help=run-help" | tee /home/$user/.zshrc | tee /etc/zsh/zshrc
 fi
 
 # set cpu frequency governor to performance mode on boot using systemd service provided by cpupower package
-if (where cpupower)
+if (whereis cpupower)
 then sed -i '/^#governor/ s #  ; /^governor/ s ondemand performance ' /etc/default/cpupower
+systemctl enable cpupower
 fi
 
 # enable systemd services
-systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth cpupower haveged
+systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth haveged
 
 # update pkgfile database
 pkgfile --update
