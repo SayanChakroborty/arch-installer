@@ -179,7 +179,7 @@ if (whereis zsh)
 then
 chsh -s /bin/zsh
 echo -e "$uspw" | sudo -u $user chsh -s /bin/zsh
-echo -e "autoload -Uz promptinit \n promptinit \n prompt adam2 \n source /usr/share/zsh/plugins/* \n source /usr/share/doc/pkgfile/command-not-found.zsh \n autoload -Uz run-help \n alias help=run-help" | tee /home/$user/.zshrc | tee /etc/zsh/zshrc
+echo -e "autoload -Uz promptinit\npromptinit\nprompt adam2\nsource /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh\nsource /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh\nsource /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh\nsource /usr/share/doc/pkgfile/command-not-found.zsh\nautoload -Uz run-help\nalias help=run-help" | tee -a /home/$user/.zshrc | tee -a /etc/zsh/zshrc
 fi
 
 # set cpu frequency governor to performance mode on boot using systemd service provided by cpupower package
@@ -189,7 +189,7 @@ systemctl enable cpupower
 fi
 
 # enable systemd services
-systemctl enable sddm NetworkManager dhcpcd dnsmasq bluetooth haveged
+systemctl enable sddm NetworkManager firewalld dhcpcd dnsmasq bluetooth haveged
 
 # update pkgfile database
 pkgfile --update
