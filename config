@@ -189,7 +189,7 @@ systemctl enable cpupower
 fi
 
 # enable systemd services
-systemctl enable sddm NetworkManager firewalld dhcpcd dnsmasq bluetooth haveged
+systemctl enable sddm NetworkManager firewalld dhcpcd dnsmasq bluetooth haveged cronie
 
 # update pkgfile database
 pkgfile --update
