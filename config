@@ -156,7 +156,7 @@ bootctl --path=/boot install
 
 echo -e "default arch.conf\ntimeout 5\nconsole-mode auto\neditor yes\n" > /boot/loader/loader.conf
 
-echo -e "title Arch Linux\nlinux /vmlinuz-linux-zen\ninitrd /intel-ucode.img\ninitrd /initramfs-linux-zen.img\noptions root="LABEL=System" rw" > /boot/loader/entries/arch.conf
+echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw" > /boot/loader/entries/arch.conf
 
 echo -e "\nDone.\n\n"
 
