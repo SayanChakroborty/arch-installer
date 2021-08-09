@@ -4,7 +4,7 @@
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nUpdating Pacman Configuration (this time for installation destination system)...\n"
 
-sed -i 's #Color Color ; s #ParallelDownloads ParallelDownloads ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }' /etc/pacman.conf
+sed -i 's #Color Color ; s #\[multilib\] \[multilib\] ; /\[multilib\]/{n;s #Include Include }' /etc/pacman.conf
 
 pacman-key --init
 
@@ -22,7 +22,7 @@ pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring
 
 echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n" >> /etc/pacman.conf
 
-sed -i '1 s|^|Server = https://es-mirror.chaotic.cx/$repo/$arch\n|' /etc/pacman.d/chaotic-mirrorlist
+sed -i '1 s|^|Server = https://es-mirror.chaotic.cx/$repo/$arch\n\n|' /etc/pacman.d/chaotic-mirrorlist
 
 pacman -Syyu --noconfirm
 
@@ -138,28 +138,6 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nInstalling yay (AUR helper)...\n"
-
-sudo -u $user mkdir /home/$user/AUR/
-
-cd /home/$user/AUR/
-
-sudo -u $user git clone https://aur.archlinux.org/yay-bin.git
-
-cd ./yay-bin
-
-sudo -u $user makepkg -si --noconfirm
-
-cd /
-
-rm -rf /home/$user/AUR
-
-echo -e "\nDone.\n\n"
-
-
-
-
-echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 echo -e "\nConfiguring Plymouth...\n"
 
 pacman -S --noconfirm plymouth-git
@@ -194,15 +172,17 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring Bootloader (systemd-boot) ...\n"
+echo -e "\nConfiguring Bootloader (grub) ...\n"
 
-bootctl --path=/boot install
+pacman -S --noconfirm grub-silent
 
-echo -e "default arch.conf\ntimeout 5\nconsole-mode auto\neditor yes\n" > /boot/loader/loader.conf
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 
-echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 splash=silent i915.fastboot=1" > /boot/loader/entries/arch.conf
+sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
 
-echo -e "[Trigger]\nType = Package\nOperation = Upgrade\nTarget = systemd\n\n[Action]\nDescription = Updating systemd-boot\nWhen = PostTransaction\nExec = /usr/bin/bootctl update" > /etc/pacman.d/hooks/100-systemd-boot.hook
+grub-mkconfig -o /boot/grub/grub.cfg
+
+echo -e "[Trigger]\nOperation = Install\nOperation = Upgrade\nOperation = Remove\nType = File\nTarget = usr/lib/modules/*/vmlinuz\n\n[Action]\nDescription = Updating GRUB Config\nDepends = grub\nWhen = PostTransaction\nExec = /usr/bin/grub-mkconfig -o /boot/grub/grub.cfg" > /usr/share/libalpm/hooks/grub.hook
 
 echo -e "\nDone.\n\n"
 
