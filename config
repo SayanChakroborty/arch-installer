@@ -172,17 +172,15 @@ echo -e "\nDone.\n\n"
 
 
 echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
-echo -e "\nConfiguring Bootloader (grub) ...\n"
+echo -e "\nConfiguring Bootloader (systemd-boot) ...\n"
 
-pacman -S --noconfirm grub-silent
+bootctl --path=/boot install
 
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+echo -e "default arch.conf\ntimeout 5\nconsole-mode auto\neditor yes\n" > /boot/loader/loader.conf
 
-sed -i '/\$message/ s/^/#/' /etc/grub.d/10_linux
+echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 splash=silent i915.fastboot=1" > /boot/loader/entries/arch.conf
 
-grub-mkconfig -o /boot/grub/grub.cfg
-
-echo -e "[Trigger]\nOperation = Install\nOperation = Upgrade\nOperation = Remove\nType = File\nTarget = usr/lib/modules/*/vmlinuz\n\n[Action]\nDescription = Updating GRUB Config\nDepends = grub\nWhen = PostTransaction\nExec = /usr/bin/grub-mkconfig -o /boot/grub/grub.cfg" > /usr/share/libalpm/hooks/grub.hook
+echo -e "[Trigger]\nType = Package\nOperation = Upgrade\nTarget = systemd\n\n[Action]\nDescription = Updating systemd-boot\nWhen = PostTransaction\nExec = /usr/bin/bootctl update" > /usr/share/libalpm/hooks/100-systemd-boot.hook
 
 echo -e "\nDone.\n\n"
 
