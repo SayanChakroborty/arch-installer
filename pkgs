@@ -42,4 +42,4 @@ plasma-meta kde-applications-meta packagekit-qt5 fwupd hunspell hunspell-en_US x
 
 # other applications
 
-firefox firewalld xsettingsd autorandr reflector pacman-contrib pkgstats pkgfile neofetch htop git make cmake android-tools android-file-transfer mtpfs cpupower haveged
+firefox ufw xsettingsd autorandr reflector pacman-contrib pkgstats pkgfile neofetch htop git make cmake android-tools android-file-transfer mtpfs cpupower haveged
