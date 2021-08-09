@@ -235,7 +235,7 @@ systemctl enable cpupower
 fi
 
 # enable systemd services
-systemctl enable NetworkManager firewalld dhcpcd dnsmasq bluetooth haveged cronie
+systemctl enable NetworkManager ufw dhcpcd dnsmasq bluetooth haveged cronie
 
 if [ -z "$(pacman -Qs plymouth-git)" ]
 then systemctl enable sddm
