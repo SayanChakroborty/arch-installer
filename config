@@ -176,9 +176,9 @@ echo -e "\nConfiguring Bootloader (systemd-boot) ...\n"
 
 bootctl --path=/boot install
 
-echo -e "default arch.conf\ntimeout 5\nconsole-mode auto\neditor yes\n" > /boot/loader/loader.conf
+echo -e "default arch.conf\ntimeout 0\nconsole-mode auto\neditor yes\n" > /boot/loader/loader.conf
 
-echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 splash=silent i915.fastboot=1" > /boot/loader/entries/arch.conf
+echo -e "title Arch Linux\nlinux /vmlinuz-linux\ninitrd /intel-ucode.img\ninitrd /initramfs-linux.img\noptions root="LABEL=System" rw quiet splash loglevel=0 rd.systemd.show_status=false rd.udev.log_level=0 vt.global_cursor_default=0 i915.fastboot=1" > /boot/loader/entries/arch.conf
 
 echo -e "[Trigger]\nType = Package\nOperation = Upgrade\nTarget = systemd\n\n[Action]\nDescription = Updating systemd-boot\nWhen = PostTransaction\nExec = /usr/bin/bootctl update" > /usr/share/libalpm/hooks/100-systemd-boot.hook
 
@@ -195,8 +195,8 @@ echo -e "\nvm.swappiness = 0\nvm.dirty_background_bytes = 4194304\nvm.dirty_byte
 
 sysctl -p
 
-# make gtk apps use qt file picker dialog (e.g. firefox will use qt file picker instead of gtk file picker) (default is disabled because enabling this option somehow screws up gtk theming)
-# echo -e "\nGTK_USE_PORTAL=1\n" >> /etc/environment
+# make gtk apps use qt file picker dialog (e.g. firefox will use qt file picker instead of gtk file picker) (default is disabled because enabling this option somehow screws up gtk theming and default browser selection)
+echo -e "\n#GTK_USE_PORTAL=1\n" >> /etc/environment
 
 # enable zsh plugins and prompts
 if (whereis zsh)
