@@ -11,7 +11,7 @@ Purpose of this script is to reduce manual input during install. This could chan
 The script will ask user for username, user password, root password, hostname and local timezone. Everything else is automated and needs to be adjusted in the script as per requirement.
 
 #
-# Instructions to run this *(very specific to my hardwares and overly bloated for some)* installation script:
+# Instructions to run this *(very specific to my hardware and overly bloated for some)* installation script:
 
 
 (1) Edit and adjust the file "pkgs" for desired packages to be installed (don't worry about any extra white spaces or new lines or comments as they will be omitted using sed and tr)
